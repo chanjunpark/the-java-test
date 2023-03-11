@@ -14,6 +14,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
 class StudyServiceTest {
@@ -23,6 +24,9 @@ class StudyServiceTest {
 
     @Mock
     StudyRepository studyRepository;
+
+    @Mock
+    StudyService studyService;
 
     @Test
     void createStudyService() {
@@ -61,7 +65,7 @@ class StudyServiceTest {
     }
 
     @Test
-    void MockitoStubbing() {
+    void mockitoStubbing() {
 
         Member member = new Member();
         member.setId(1L);
@@ -79,6 +83,45 @@ class StudyServiceTest {
             memberService.findById(1L);
         });
         assertEquals(Optional.empty(), memberService.findById(1L));
+
+    }
+
+    @Test
+    void practiceMockStubbing() {
+        StudyService studyService2 = new StudyService(memberService, studyRepository);
+        Study study = new Study(10, "test");
+
+        Member member = new Member();
+        member.setId(1L);
+        member.setEmail("test@email.com");
+
+        Mockito.when(memberService.findById(1L)).thenReturn(Optional.of(member));
+        Mockito.when(studyRepository.save(study)).thenReturn(study);
+
+        studyService2.createNewStudy(1L, study);
+        assertEquals(member, study.getOwner());
+
+
+    }
+
+    @Test
+    void bddTestByMockito() {
+        // Given
+        StudyService studyService = new StudyService(memberService, studyRepository);
+        assertNotNull(studyService);
+
+        Member member = new Member();
+        member.setId(1L);
+        member.setEmail("test@email.com");
+
+        Study study = new Study(10, "test");
+
+        given(memberService.findById(1L)).willReturn(Optional.of(member));
+        given(studyRepository.save(study)).willReturn(study);
+
+        //when
+        studyService.createNewStudy(1L, study);
+
 
     }
 

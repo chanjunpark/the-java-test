@@ -10,6 +10,8 @@ public class Study {
 
     private String name;
 
+    private Member owner;
+
     public Study(int limit) {
         if(limit < 0) {
             throw new IllegalArgumentException("limit은 0보다 커야 한다.");
@@ -33,5 +35,10 @@ public class Study {
     }
 
     public void setOwner(Member member) {
+        this.owner = member;
+    }
+
+    public Member getOwner() {
+        return this.owner;
     }
 }
